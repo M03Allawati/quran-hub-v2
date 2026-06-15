@@ -1,50 +1,47 @@
-# ============================================
-# CGP Project - Flask Application Dockerfile
-# ============================================
+FROM php:8.2-apache
 
-# استخدام Python 3.11 slim (خفيف وسريع)
-FROM python:3.11-slim
-
-# معلومات المشروع
-LABEL maintainer="Mohsin Allawati"
-LABEL project="cgp-project"
-LABEL description="Career Guidance Platform - Flask App"
-
-# منع Python من إنشاء ملفات .pyc وتفعيل output مباشر
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV FLASK_APP=app.py
-ENV PORT=5050
-
-# إنشاء working directory داخل الـ container
-WORKDIR /app
-
-# تثبيت system dependencies (لو احتجنا أي شي مستقبلاً)
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    libpng-dev libjpeg-dev libfreetype6-dev \
+    libonig-dev libxml2-dev libzip-dev \
+    default-mysql-client \
+    zip unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# نسخ requirements.txt أولاً (للاستفادة من Docker cache)
-COPY requirements.txt .
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+RUN docker-php-ext-install \
+    pdo pdo_mysql mysqli mbstring \
+    exif bcmath gd zip opcache
 
-# تثبيت Python dependencies
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    pip install --no-cache-dir gunicorn
+# Enable Apache modules
+RUN a2enmod rewrite headers expires deflate
 
-# نسخ كل ملفات المشروع
+# PHP configuration
+RUN echo "upload_max_filesize = 6M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "post_max_size = 8M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "max_execution_time = 30" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "memory_limit = 256M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "default_charset = UTF-8" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "expose_php = Off" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "display_errors = Off" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "log_errors = On" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "allow_url_include = Off" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "session.cookie_httponly = 1" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "session.cookie_samesite = Lax" >> /usr/local/etc/php/conf.d/custom.ini
+
+# Apache config
+COPY apache-railway.conf /etc/apache2/sites-available/000-default.conf
+
+# Copy app files
+WORKDIR /var/www/html
 COPY . .
 
-# إنشاء مجلد database لو ما كان موجود
-RUN mkdir -p /app/database
+# Set permissions and make startup executable
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 777 /var/www/html/uploads \
+    && chmod +x /var/www/html/startup.sh
 
-# فتح البورت 5050
-EXPOSE 5050
-
-# Health check للتأكد إن التطبيق شغّال
-HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5050/')" || exit 1
-
-# تشغيل التطبيق باستخدام gunicorn (production-ready)
-# لو تبي development mode بدّل بـ: CMD ["python", "app.py"]
-CMD ["gunicorn", "--bind", "0.0.0.0:5050", "--workers", "2", "--timeout", "120", "--access-logfile", "-", "app:create_app()"]
+EXPOSE 80
+CMD ["/var/www/html/startup.sh"]
