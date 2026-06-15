@@ -1,9 +1,5 @@
 FROM php:8.2-apache
 
-# Disable conflicting MPMs (only mpm_prefork should be active for PHP)
-RUN a2dismod mpm_event mpm_worker 2>/dev/null || true
-RUN a2enmod mpm_prefork
-
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev \
@@ -18,8 +14,16 @@ RUN docker-php-ext-install \
     pdo pdo_mysql mysqli mbstring \
     exif bcmath gd zip opcache
 
-# Enable Apache modules
-RUN a2enmod rewrite headers expires deflate
+# Enable Apache modules (rewrite, headers, expires, deflate) and ensure only mpm_prefork
+RUN a2enmod rewrite headers expires deflate \
+    && a2dismod mpm_event 2>/dev/null || true \
+    && a2dismod mpm_worker 2>/dev/null || true \
+    && a2enmod mpm_prefork \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.* \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.load \
+    && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
+    && rm -f /etc/apache2/mods-enabled/mpm_worker.load \
+    && rm -f /etc/apache2/mods-enabled/mpm_worker.conf
 
 # PHP configuration
 RUN echo "upload_max_filesize = 6M" >> /usr/local/etc/php/conf.d/custom.ini \
@@ -46,6 +50,9 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
     && chmod +x /var/www/html/startup.sh
+
+# Verify only one MPM is loaded at build time
+RUN ls -la /etc/apache2/mods-enabled/ | grep mpm
 
 EXPOSE 80
 CMD ["/var/www/html/startup.sh"]
