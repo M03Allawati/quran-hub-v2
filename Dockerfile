@@ -1,5 +1,9 @@
 FROM php:8.2-apache
 
+# Disable conflicting MPMs (only mpm_prefork should be active for PHP)
+RUN a2dismod mpm_event mpm_worker 2>/dev/null || true
+RUN a2enmod mpm_prefork
+
 # Install dependencies
 RUN apt-get update && apt-get install -y \
     libpng-dev libjpeg-dev libfreetype6-dev \
@@ -37,7 +41,7 @@ COPY apache-railway.conf /etc/apache2/sites-available/000-default.conf
 WORKDIR /var/www/html
 COPY . .
 
-# Set permissions and make startup executable
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
