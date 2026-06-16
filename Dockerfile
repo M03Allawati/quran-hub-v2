@@ -14,16 +14,16 @@ RUN docker-php-ext-install \
     pdo pdo_mysql mysqli mbstring \
     exif bcmath gd zip opcache
 
-# Enable Apache modules (rewrite, headers, expires, deflate) and ensure only mpm_prefork
-RUN a2enmod rewrite headers expires deflate \
-    && a2dismod mpm_event 2>/dev/null || true \
-    && a2dismod mpm_worker 2>/dev/null || true \
-    && a2enmod mpm_prefork \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.* \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.load \
-    && rm -f /etc/apache2/mods-enabled/mpm_event.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_worker.load \
-    && rm -f /etc/apache2/mods-enabled/mpm_worker.conf
+# CRITICAL FIX: Remove ALL MPM modules then enable only prefork
+# This handles the case where php:apache image loads MPM in apache2.conf directly
+RUN find /etc/apache2/mods-enabled -name "mpm_*" -delete \
+    && find /etc/apache2/mods-available -name "mpm_event*" -exec sed -i 's/^LoadModule/#LoadModule/g' {} \; \
+    && find /etc/apache2/mods-available -name "mpm_worker*" -exec sed -i 's/^LoadModule/#LoadModule/g' {} \; \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf
+
+# Enable Apache modules
+RUN a2enmod rewrite headers expires deflate
 
 # PHP configuration
 RUN echo "upload_max_filesize = 6M" >> /usr/local/etc/php/conf.d/custom.ini \
@@ -51,8 +51,8 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
     && chmod +x /var/www/html/startup.sh
 
-# Verify only one MPM is loaded at build time
-RUN ls -la /etc/apache2/mods-enabled/ | grep mpm
+# Verify MPM at build time
+RUN echo "===MPM CHECK===" && ls -la /etc/apache2/mods-enabled/ | grep mpm && echo "===END==="
 
 EXPOSE 80
 CMD ["/var/www/html/startup.sh"]
