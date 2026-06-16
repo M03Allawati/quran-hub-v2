@@ -14,13 +14,10 @@ RUN docker-php-ext-install \
     pdo pdo_mysql mysqli mbstring \
     exif bcmath gd zip opcache
 
-# CRITICAL FIX: Remove ALL MPM modules then enable only prefork
-# This handles the case where php:apache image loads MPM in apache2.conf directly
-RUN find /etc/apache2/mods-enabled -name "mpm_*" -delete \
-    && find /etc/apache2/mods-available -name "mpm_event*" -exec sed -i 's/^LoadModule/#LoadModule/g' {} \; \
-    && find /etc/apache2/mods-available -name "mpm_worker*" -exec sed -i 's/^LoadModule/#LoadModule/g' {} \; \
-    && ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load \
-    && ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf
+# CRITICAL: Remove ALL MPM-related files completely
+RUN rm -f /etc/apache2/mods-enabled/mpm_*.conf \
+    && rm -f /etc/apache2/mods-enabled/mpm_*.load \
+    && a2enmod mpm_prefork
 
 # Enable Apache modules
 RUN a2enmod rewrite headers expires deflate
@@ -51,8 +48,8 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
     && chmod +x /var/www/html/startup.sh
 
-# Verify MPM at build time
-RUN echo "===MPM CHECK===" && ls -la /etc/apache2/mods-enabled/ | grep mpm && echo "===END==="
+# Verify only mpm_prefork at build time
+RUN echo "=== MPM Files ===" && ls -la /etc/apache2/mods-enabled/ | grep mpm
 
 EXPOSE 80
 CMD ["/var/www/html/startup.sh"]
