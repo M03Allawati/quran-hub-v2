@@ -6,10 +6,11 @@ RUN apt-get update && apt-get install -y \
     libapache2-mod-php8.2 \
     php8.2 php8.2-mysql php8.2-mbstring php8.2-gd php8.2-zip php8.2-curl php8.2-xml php8.2-bcmath php8.2-opcache \
     default-mysql-client \
+    apache2-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache modules (php8.2 instead of php)
-RUN a2enmod rewrite headers expires deflate php8.2
+# Enable Apache modules (added auth modules)
+RUN a2enmod rewrite headers expires deflate php8.2 auth_basic authn_file authz_user
 
 # PHP configuration
 RUN echo "upload_max_filesize = 6M\n\
@@ -24,8 +25,9 @@ allow_url_include = Off\n\
 session.cookie_httponly = 1\n\
 session.cookie_samesite = Lax" > /etc/php/8.2/apache2/conf.d/99-custom.ini
 
-# Apache config
+# Apache config + htpasswd
 COPY apache-railway.conf /etc/apache2/sites-available/000-default.conf
+COPY .htpasswd /etc/apache2/.htpasswd
 
 # Copy app files
 WORKDIR /var/www/html
@@ -36,7 +38,8 @@ COPY . .
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
-    && chmod +x /var/www/html/startup.sh
+    && chmod +x /var/www/html/startup.sh \
+    && chmod 644 /etc/apache2/.htpasswd
 
 ENV APACHE_RUN_USER=www-data \
     APACHE_RUN_GROUP=www-data \
