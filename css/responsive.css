@@ -1,27 +1,32 @@
 /* ═══════════════════════════════════════════════════════════ */
-/* RESPONSIVE V3 - Correct class names for Quran Hub            */
+/* RESPONSIVE V4 - Clean compact mobile design                  */
 /* ═══════════════════════════════════════════════════════════ */
 
 * { box-sizing: border-box; }
-html, body { overflow-x: hidden; -webkit-text-size-adjust: 100%; margin: 0; padding: 0; }
+html, body { 
+    overflow-x: hidden; 
+    -webkit-text-size-adjust: 100%; 
+    margin: 0; 
+    padding: 0; 
+}
 
-/* Mobile menu toggle button - clean modern design */
+/* Hamburger - clean and small */
 .mobile-menu-toggle {
     display: none;
     position: fixed;
-    top: 14px;
-    left: 14px;
+    top: 10px;
+    left: 10px;
     z-index: 99999;
     background: #fff;
     color: #6D28D9;
-    border: 2px solid #6D28D9;
-    width: 44px;
-    height: 44px;
-    border-radius: 10px;
-    font-size: 22px;
-    font-weight: bold;
+    border: 1.5px solid #6D28D9;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(109,40,217,0.25);
+    box-shadow: 0 2px 8px rgba(109,40,217,0.15);
     align-items: center;
     justify-content: center;
     padding: 0;
@@ -32,123 +37,167 @@ html, body { overflow-x: hidden; -webkit-text-size-adjust: 100%; margin: 0; padd
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.4);
     z-index: 99990;
-    backdrop-filter: blur(2px);
 }
 .sidebar-overlay.active { display: block !important; }
 
 /* ═══════════ TABLET (max 1024px) ═══════════ */
 @media (max-width: 1024px) {
     .sidebar { width: 200px !important; }
-    .main-content { padding: 1.5rem !important; }
-    .navbar { padding: 0 1rem !important; }
-    
+    .main-content { padding: 1.25rem !important; }
     [style*="grid-template-columns:repeat(4"] {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
-    [style*="grid-template-columns:repeat(3"] {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 }
 
 /* ═══════════ MOBILE (max 768px) ═══════════ */
 @media (max-width: 768px) {
+    .mobile-menu-toggle { display: flex !important; }
     
-    /* Show hamburger button */
-    .mobile-menu-toggle {
-        display: flex !important;
-    }
-    
-    /* NAVBAR fix - hide right links, adjust padding */
+    /* NAVBAR - compact */
     .navbar {
-        padding: 0.5rem 1rem 0.5rem 70px !important;
+        padding: 8px 12px 8px 56px !important;
+        min-height: 48px !important;
         position: sticky !important;
         top: 0;
         z-index: 100;
-        flex-wrap: nowrap !important;
     }
-    .navbar-nav {
-        display: none !important;
-    }
+    .navbar-nav { display: none !important; }
     .navbar-brand {
-        font-size: 0.95rem !important;
+        gap: 6px !important;
     }
     .navbar-brand span {
-        font-size: 0.9rem !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
     }
     .logo-icon {
-        width: 36px !important;
-        height: 36px !important;
-        font-size: 1rem !important;
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.85rem !important;
     }
     
-    /* SIDEBAR - slide from left */
+    /* SIDEBAR */
     .sidebar {
         position: fixed !important;
         top: 0 !important;
-        left: -290px !important;
-        width: 280px !important;
+        left: -260px !important;
+        width: 250px !important;
         height: 100vh !important;
         z-index: 99995 !important;
         overflow-y: auto !important;
-        transition: left 0.3s ease !important;
+        transition: left 0.25s ease !important;
         background: #fff !important;
-        box-shadow: 4px 0 16px rgba(0,0,0,0.15) !important;
-        padding-top: 70px !important;
+        box-shadow: 4px 0 16px rgba(0,0,0,0.12) !important;
+        padding: 60px 12px 16px 12px !important;
     }
-    .sidebar.mobile-open {
-        left: 0 !important;
-    }
+    .sidebar.mobile-open { left: 0 !important; }
     
-    /* LAYOUT - single column */
-    .layout {
-        display: block !important;
-    }
+    /* LAYOUT */
+    .layout { display: block !important; }
     .main-content {
         flex: none !important;
-        padding: 1rem !important;
+        padding: 12px !important;
         width: 100% !important;
         max-width: 100% !important;
     }
     
-    /* Page header */
-    .page-title { font-size: 1.3rem !important; }
-    .page-subtitle { font-size: 0.85rem !important; }
+    /* COMPACT page header */
+    .page-header { 
+        margin-bottom: 1rem !important;
+        padding-bottom: 0.5rem !important;
+    }
+    .page-title { 
+        font-size: 1.1rem !important;
+        margin-bottom: 2px !important;
+    }
+    .page-subtitle { 
+        font-size: 0.75rem !important;
+    }
     
-    /* All grids → 1-2 columns */
+    /* COMPACT cards - smaller boxes */
+    .card, [class*="card"] {
+        padding: 12px !important;
+        margin-bottom: 8px !important;
+        border-radius: 10px !important;
+    }
+    
+    /* COMPACT stat cards - smaller numbers */
+    [style*="stat-card"],
+    [class*="stat"] {
+        padding: 10px !important;
+    }
+    [style*="font-size:1.5rem"],
+    [style*="font-size: 1.5rem"],
+    [style*="font-size:1.6rem"],
+    [style*="font-size: 1.6rem"],
+    [style*="font-size:2rem"],
+    [style*="font-size: 2rem"] {
+        font-size: 1.1rem !important;
+    }
+    [style*="font-size:1.2rem"],
+    [style*="font-size: 1.2rem"] {
+        font-size: 0.95rem !important;
+    }
+    
+    /* Grid → 2 cols (stats) or 1 col (cards) */
     [style*="grid-template-columns:repeat(4"] {
         grid-template-columns: repeat(2, 1fr) !important;
         gap: 8px !important;
     }
     [style*="grid-template-columns:repeat(3"] {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
     }
     [style*="grid-template-columns:repeat(auto-fill"] {
         grid-template-columns: 1fr !important;
+        gap: 8px !important;
     }
     [style*="grid-template-columns:200px"],
     [style*="grid-template-columns:220px"],
     [style*="grid-template-columns:240px"] {
         grid-template-columns: 1fr !important;
+        gap: 12px !important;
     }
     
-    /* Forms */
+    /* Reduce gap in grids */
+    [style*="gap:1rem"],
+    [style*="gap: 1rem"] {
+        gap: 8px !important;
+    }
+    [style*="gap:1.5rem"],
+    [style*="gap: 1.5rem"] {
+        gap: 10px !important;
+    }
+    [style*="gap:2rem"],
+    [style*="gap: 2rem"] {
+        gap: 12px !important;
+    }
+    
+    /* Headings - smaller */
+    h1 { font-size: 1.2rem !important; margin-bottom: 0.5rem !important; }
+    h2 { font-size: 1rem !important; margin-bottom: 0.5rem !important; }
+    h3 { font-size: 0.9rem !important; }
+    
+    /* Forms compact */
     input, select, textarea {
         font-size: 16px !important;
+        padding: 8px 10px !important;
         width: 100% !important;
-        min-height: 42px;
     }
     button, .btn {
-        min-height: 42px !important;
-        font-size: 14px !important;
+        font-size: 13px !important;
+        padding: 8px 14px !important;
+    }
+    .btn-sm {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
     }
     
-    /* Login form - center properly */
-    [style*="max-width:400px"],
-    [style*="max-width: 400px"] {
-        max-width: 100% !important;
-        margin: 0 !important;
+    /* Compact labels */
+    label {
+        font-size: 0.8rem !important;
+        margin-bottom: 4px !important;
     }
     
     /* Tables */
@@ -156,35 +205,84 @@ html, body { overflow-x: hidden; -webkit-text-size-adjust: 100%; margin: 0; padd
         display: block;
         overflow-x: auto;
         white-space: nowrap;
-        font-size: 13px;
+        font-size: 12px !important;
         -webkit-overflow-scrolling: touch;
     }
+    th, td { padding: 6px 8px !important; }
     
-    /* Cards take full width */
-    .card { width: 100% !important; margin-bottom: 12px; }
+    /* Reduce padding everywhere */
+    [style*="padding:1.5rem"],
+    [style*="padding: 1.5rem"] {
+        padding: 10px !important;
+    }
+    [style*="padding:2rem"],
+    [style*="padding: 2rem"] {
+        padding: 12px !important;
+    }
+    [style*="padding:1rem"],
+    [style*="padding: 1rem"] {
+        padding: 10px !important;
+    }
     
-    /* Flex containers wrap */
-    [style*="display:flex"]:not(.navbar):not(.sidebar) {
+    /* Margins compact */
+    [style*="margin-bottom:2rem"],
+    [style*="margin-bottom: 2rem"] {
+        margin-bottom: 1rem !important;
+    }
+    [style*="margin-bottom:1.5rem"],
+    [style*="margin-bottom: 1.5rem"] {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    /* Login page specific */
+    [style*="max-width:400px"],
+    [style*="max-width: 400px"] {
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+    
+    /* Make sure text doesn't overflow */
+    p, span, div { word-wrap: break-word; overflow-wrap: break-word; }
+    
+    /* Icons smaller */
+    .icon { font-size: 1rem !important; }
+    i.fas, i.fa { font-size: 0.9rem !important; }
+    
+    /* Flex containers */
+    [style*="display:flex"]:not(.navbar):not(.sidebar):not(.mobile-menu-toggle) {
         flex-wrap: wrap !important;
+        gap: 6px !important;
     }
 }
 
+/* ═══════════ SMALL MOBILE (max 480px) ═══════════ */
 @media (max-width: 480px) {
     [style*="grid-template-columns:repeat(2"] {
-        grid-template-columns: 1fr !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
     }
-    .main-content { padding: 0.75rem !important; }
-    .navbar-brand span { font-size: 0.8rem !important; }
+    .main-content { padding: 10px !important; }
+    .navbar-brand span { font-size: 0.78rem !important; }
+    h1 { font-size: 1.05rem !important; }
+    
+    /* Even smaller stats */
+    [style*="font-size:1.5rem"],
+    [style*="font-size: 1.5rem"] {
+        font-size: 1rem !important;
+    }
+    
+    /* Cards super compact */
+    .card { padding: 10px !important; }
 }
 
-/* RTL support */
+/* RTL */
 [dir="rtl"] .mobile-menu-toggle {
     left: auto;
-    right: 14px;
+    right: 10px;
 }
 [dir="rtl"] .sidebar {
     left: auto !important;
-    right: -290px !important;
+    right: -260px !important;
 }
 [dir="rtl"] .sidebar.mobile-open {
     left: auto !important;
@@ -192,6 +290,6 @@ html, body { overflow-x: hidden; -webkit-text-size-adjust: 100%; margin: 0; padd
 }
 @media (max-width: 768px) {
     [dir="rtl"] .navbar {
-        padding: 0.5rem 70px 0.5rem 1rem !important;
+        padding: 8px 56px 8px 12px !important;
     }
 }
