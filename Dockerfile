@@ -59,4 +59,3 @@ RUN mkdir -p $APACHE_RUN_DIR $APACHE_LOCK_DIR $APACHE_LOG_DIR
 
 EXPOSE 80
 CMD ["/var/www/html/startup.sh"]
-# Force rebuild Tue Jun 16 09:29:16 +04 2026
