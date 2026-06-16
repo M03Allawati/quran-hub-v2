@@ -9,8 +9,11 @@ RUN apt-get update && apt-get install -y \
     apache2-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache modules (added auth modules)
-RUN a2enmod rewrite headers expires deflate php8.2 auth_basic authn_file authz_user
+# Enable Apache modules INCLUDING auth modules
+RUN a2enmod rewrite headers expires deflate php8.2 auth_basic authn_file authn_core authz_user authz_core
+
+# Generate htpasswd file directly inside the image (more reliable than COPY)
+RUN htpasswd -bc /etc/apache2/.htpasswd admin 'QuranHub2026!'
 
 # PHP configuration
 RUN echo "upload_max_filesize = 6M\n\
@@ -25,9 +28,8 @@ allow_url_include = Off\n\
 session.cookie_httponly = 1\n\
 session.cookie_samesite = Lax" > /etc/php/8.2/apache2/conf.d/99-custom.ini
 
-# Apache config + htpasswd
+# Apache config
 COPY apache-railway.conf /etc/apache2/sites-available/000-default.conf
-COPY .htpasswd /etc/apache2/.htpasswd
 
 # Copy app files
 WORKDIR /var/www/html
@@ -39,7 +41,11 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
     && chmod +x /var/www/html/startup.sh \
-    && chmod 644 /etc/apache2/.htpasswd
+    && chmod 644 /etc/apache2/.htpasswd \
+    && rm -f /var/www/html/.htpasswd
+
+# Verify htpasswd was created
+RUN ls -la /etc/apache2/.htpasswd && cat /etc/apache2/.htpasswd
 
 ENV APACHE_RUN_USER=www-data \
     APACHE_RUN_GROUP=www-data \
