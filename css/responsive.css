@@ -1,46 +1,50 @@
 /* ═══════════════════════════════════════════════════════════ */
-/* RESPONSIVE DESIGN - Mobile, Tablet, Desktop                  */
+/* RESPONSIVE V2 - Aggressive mobile fixes                     */
 /* ═══════════════════════════════════════════════════════════ */
 
-/* Reset for mobile */
 * { box-sizing: border-box; }
 
 html, body {
     overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
+    margin: 0;
+    padding: 0;
 }
 
-/* Mobile menu toggle button */
+/* Mobile menu button */
 .mobile-menu-toggle {
     display: none;
     position: fixed;
     top: 12px;
     left: 12px;
-    z-index: 9999;
-    background: var(--green-main, #16a34a);
-    color: #fff;
-    border: none;
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    font-size: 22px;
+    z-index: 99999;
+    background: #fff;
+    color: #6b21a8;
+    border: 2px solid #6b21a8;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    font-size: 24px;
+    font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
-/* Sidebar overlay for mobile */
 .sidebar-overlay {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 9990;
+    background: rgba(0,0,0,0.6);
+    z-index: 99990;
 }
 .sidebar-overlay.active {
-    display: block;
+    display: block !important;
 }
 
-/* ═══════════ TABLET (768px - 1024px) ═══════════ */
+/* ═══════════ TABLET ═══════════ */
 @media (max-width: 1024px) {
     .layout {
         grid-template-columns: 220px 1fr !important;
@@ -48,153 +52,148 @@ html, body {
     .main-content {
         padding: 16px !important;
     }
-    /* Auto-fit grids */
     [style*="grid-template-columns:repeat(4"] {
         grid-template-columns: repeat(2, 1fr) !important;
     }
     [style*="grid-template-columns:repeat(3"] {
         grid-template-columns: repeat(2, 1fr) !important;
     }
-    /* Tables become scrollable */
-    .table-responsive,
-    table {
-        display: block;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
+    [style*="grid-template-columns:200px"] {
+        grid-template-columns: 180px 1fr !important;
     }
 }
 
-/* ═══════════ MOBILE (max 768px) ═══════════ */
+/* ═══════════ MOBILE ═══════════ */
 @media (max-width: 768px) {
-    /* Show hamburger button */
     .mobile-menu-toggle {
         display: flex !important;
-        align-items: center;
-        justify-content: center;
+    }
+
+    /* Top nav adjustments for mobile menu button */
+    .top-nav, header, [class*="nav"] {
+        padding-left: 70px !important;
     }
     
-    /* Sidebar slides in from left */
+    /* Hide right navigation links on mobile (Home, Mosques, Login etc) */
+    .top-nav-links,
+    .top-nav .nav-links,
+    nav .links {
+        display: none !important;
+    }
+
+    /* Sidebar slides in */
     .sidebar {
         display: block !important;
         position: fixed !important;
         top: 0;
-        left: -280px;
+        left: -300px;
         width: 280px !important;
-        height: 100vh;
-        z-index: 9995;
+        height: 100vh !important;
+        z-index: 99995;
         overflow-y: auto;
         transition: left 0.3s ease;
-        background: #fff;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        background: #fff !important;
+        box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+        padding: 60px 16px 20px 16px !important;
     }
     .sidebar.mobile-open {
         left: 0 !important;
     }
-    
-    /* Layout becomes single column */
+
+    /* Layout single column */
     .layout {
         display: block !important;
-        grid-template-columns: none !important;
+        grid-template-columns: 1fr !important;
     }
     .main-content {
-        padding: 60px 12px 16px 12px !important;
-        margin: 0 !important;
-        width: 100% !important;
-    }
-    
-    /* All grids become 1 or 2 columns */
-    [style*="grid-template-columns:repeat(4"] {
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 8px !important;
-    }
-    [style*="grid-template-columns:repeat(3"] {
-        grid-template-columns: 1fr !important;
-    }
-    [style*="grid-template-columns:repeat(auto-fill"] {
-        grid-template-columns: 1fr !important;
-    }
-    [style*="grid-template-columns:200px"],
-    [style*="grid-template-columns:240px"] {
-        grid-template-columns: 1fr !important;
-    }
-    
-    /* Header adjustments */
-    .top-nav, .header {
-        padding: 8px 12px !important;
-    }
-    .top-nav h1, .header h1 {
-        font-size: 16px !important;
-    }
-    
-    /* Form elements - bigger touch targets */
-    input, select, textarea, button {
-        font-size: 16px !important; /* Prevents iOS zoom */
-        min-height: 44px;
-    }
-    .btn {
-        padding: 10px 14px !important;
-        font-size: 14px !important;
-    }
-    .btn-sm {
-        min-height: 36px !important;
-    }
-    
-    /* Cards take full width */
-    .card, .stat-card {
-        margin-bottom: 12px;
-    }
-    
-    /* Modals fullscreen on mobile */
-    .modal {
+        padding: 80px 12px 20px 12px !important;
         margin: 0 !important;
         width: 100% !important;
         max-width: 100% !important;
-        height: 100vh;
-        border-radius: 0 !important;
+    }
+
+    /* All grids → 1 column */
+    [style*="grid-template-columns:repeat(4"],
+    [style*="grid-template-columns:repeat(3"],
+    [style*="grid-template-columns:repeat(auto-fill"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    [style*="grid-template-columns:200px"],
+    [style*="grid-template-columns:240px"],
+    [style*="grid-template-columns:220px"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Cards and boxes */
+    .card, .stat-card, [class*="card"] {
+        margin-bottom: 12px;
+        width: 100% !important;
+    }
+
+    /* Forms */
+    input, select, textarea {
+        font-size: 16px !important;
+        min-height: 44px;
+        width: 100% !important;
+    }
+    button, .btn {
+        min-height: 44px !important;
+        font-size: 15px !important;
+        padding: 10px 16px !important;
     }
     
-    /* Tables horizontal scroll */
+    /* Login page specific - make it fit */
+    [style*="max-width:400px"],
+    [style*="max-width: 400px"] {
+        max-width: 100% !important;
+    }
+    
+    /* Headings */
+    h1 { font-size: 22px !important; }
+    h2 { font-size: 18px !important; }
+    h3 { font-size: 16px !important; }
+    
+    /* Tables scroll */
     table {
-        font-size: 13px;
         display: block;
         overflow-x: auto;
         white-space: nowrap;
+        font-size: 13px;
         -webkit-overflow-scrolling: touch;
     }
     
-    /* Hide non-essential elements on mobile */
-    .hide-mobile {
-        display: none !important;
-    }
-    
-    /* Stack flex items */
-    [style*="display:flex"][style*="gap"] {
+    /* Flex wrap */
+    [style*="display:flex"] {
         flex-wrap: wrap !important;
     }
 }
 
-/* ═══════════ SMALL MOBILE (max 480px) ═══════════ */
 @media (max-width: 480px) {
     [style*="grid-template-columns:repeat(2"] {
         grid-template-columns: 1fr !important;
     }
-    h1 { font-size: 20px !important; }
-    h2 { font-size: 18px !important; }
-    .main-content {
-        padding: 60px 8px 12px 8px !important;
-    }
+    h1 { font-size: 18px !important; }
+    .main-content { padding: 70px 8px 16px 8px !important; }
 }
 
-/* ═══════════ RTL fixes ═══════════ */
+/* RTL */
 [dir="rtl"] .mobile-menu-toggle {
     left: auto;
     right: 12px;
 }
 [dir="rtl"] .sidebar {
     left: auto;
-    right: -280px;
+    right: -300px;
 }
 [dir="rtl"] .sidebar.mobile-open {
     left: auto !important;
     right: 0 !important;
+}
+@media (max-width: 768px) {
+    [dir="rtl"] .top-nav,
+    [dir="rtl"] header {
+        padding-left: 16px !important;
+        padding-right: 70px !important;
+    }
 }
