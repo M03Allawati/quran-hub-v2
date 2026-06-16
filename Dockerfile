@@ -1,15 +1,15 @@
 FROM debian:bookworm-slim
 
-# Install Apache + PHP + extensions in one go
+# Install Apache + PHP
 RUN apt-get update && apt-get install -y \
     apache2 \
-    libapache2-mod-php \
-    php php-mysql php-mbstring php-gd php-zip php-curl php-xml php-bcmath php-opcache \
+    libapache2-mod-php8.2 \
+    php8.2 php8.2-mysql php8.2-mbstring php8.2-gd php8.2-zip php8.2-curl php8.2-xml php8.2-bcmath php8.2-opcache \
     default-mysql-client \
     && rm -rf /var/lib/apt/lists/*
 
-# Enable Apache modules
-RUN a2enmod rewrite headers expires deflate php
+# Enable Apache modules (php8.2 instead of php)
+RUN a2enmod rewrite headers expires deflate php8.2
 
 # PHP configuration
 RUN echo "upload_max_filesize = 6M\n\
@@ -38,7 +38,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 777 /var/www/html/uploads \
     && chmod +x /var/www/html/startup.sh
 
-# Apache needs these to run in foreground
 ENV APACHE_RUN_USER=www-data \
     APACHE_RUN_GROUP=www-data \
     APACHE_LOG_DIR=/var/log/apache2 \
