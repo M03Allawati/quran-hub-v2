@@ -26,6 +26,8 @@ $isRtl = $lang === 'ar';
     .alert-info    { border-right-color: var(--info); }
     <?php endif; ?>
   </style>
+  <link rel="stylesheet" href="/css/responsive.css">
+  <script src="/js/mobile-menu.js" defer></script>
 </head>
 <body class="<?= $isRtl ? 'rtl' : '' ?>">
 

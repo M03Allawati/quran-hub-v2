@@ -1,0 +1,200 @@
+/* ═══════════════════════════════════════════════════════════ */
+/* RESPONSIVE DESIGN - Mobile, Tablet, Desktop                  */
+/* ═══════════════════════════════════════════════════════════ */
+
+/* Reset for mobile */
+* { box-sizing: border-box; }
+
+html, body {
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Mobile menu toggle button */
+.mobile-menu-toggle {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 9999;
+    background: var(--green-main, #16a34a);
+    color: #fff;
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    font-size: 22px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Sidebar overlay for mobile */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9990;
+}
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* ═══════════ TABLET (768px - 1024px) ═══════════ */
+@media (max-width: 1024px) {
+    .layout {
+        grid-template-columns: 220px 1fr !important;
+    }
+    .main-content {
+        padding: 16px !important;
+    }
+    /* Auto-fit grids */
+    [style*="grid-template-columns:repeat(4"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    [style*="grid-template-columns:repeat(3"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    /* Tables become scrollable */
+    .table-responsive,
+    table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ═══════════ MOBILE (max 768px) ═══════════ */
+@media (max-width: 768px) {
+    /* Show hamburger button */
+    .mobile-menu-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Sidebar slides in from left */
+    .sidebar {
+        display: block !important;
+        position: fixed !important;
+        top: 0;
+        left: -280px;
+        width: 280px !important;
+        height: 100vh;
+        z-index: 9995;
+        overflow-y: auto;
+        transition: left 0.3s ease;
+        background: #fff;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+    }
+    .sidebar.mobile-open {
+        left: 0 !important;
+    }
+    
+    /* Layout becomes single column */
+    .layout {
+        display: block !important;
+        grid-template-columns: none !important;
+    }
+    .main-content {
+        padding: 60px 12px 16px 12px !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* All grids become 1 or 2 columns */
+    [style*="grid-template-columns:repeat(4"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+    [style*="grid-template-columns:repeat(3"] {
+        grid-template-columns: 1fr !important;
+    }
+    [style*="grid-template-columns:repeat(auto-fill"] {
+        grid-template-columns: 1fr !important;
+    }
+    [style*="grid-template-columns:200px"],
+    [style*="grid-template-columns:240px"] {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Header adjustments */
+    .top-nav, .header {
+        padding: 8px 12px !important;
+    }
+    .top-nav h1, .header h1 {
+        font-size: 16px !important;
+    }
+    
+    /* Form elements - bigger touch targets */
+    input, select, textarea, button {
+        font-size: 16px !important; /* Prevents iOS zoom */
+        min-height: 44px;
+    }
+    .btn {
+        padding: 10px 14px !important;
+        font-size: 14px !important;
+    }
+    .btn-sm {
+        min-height: 36px !important;
+    }
+    
+    /* Cards take full width */
+    .card, .stat-card {
+        margin-bottom: 12px;
+    }
+    
+    /* Modals fullscreen on mobile */
+    .modal {
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh;
+        border-radius: 0 !important;
+    }
+    
+    /* Tables horizontal scroll */
+    table {
+        font-size: 13px;
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Hide non-essential elements on mobile */
+    .hide-mobile {
+        display: none !important;
+    }
+    
+    /* Stack flex items */
+    [style*="display:flex"][style*="gap"] {
+        flex-wrap: wrap !important;
+    }
+}
+
+/* ═══════════ SMALL MOBILE (max 480px) ═══════════ */
+@media (max-width: 480px) {
+    [style*="grid-template-columns:repeat(2"] {
+        grid-template-columns: 1fr !important;
+    }
+    h1 { font-size: 20px !important; }
+    h2 { font-size: 18px !important; }
+    .main-content {
+        padding: 60px 8px 12px 8px !important;
+    }
+}
+
+/* ═══════════ RTL fixes ═══════════ */
+[dir="rtl"] .mobile-menu-toggle {
+    left: auto;
+    right: 12px;
+}
+[dir="rtl"] .sidebar {
+    left: auto;
+    right: -280px;
+}
+[dir="rtl"] .sidebar.mobile-open {
+    left: auto !important;
+    right: 0 !important;
+}
